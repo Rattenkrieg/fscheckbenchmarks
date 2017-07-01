@@ -48,7 +48,7 @@ type MyConfig() =
         base.Add(baseJob
         .With(Platform.X86).WithGcServer(true).WithGcConcurrent(true)
         .With(Jit.LegacyJit))
-
+        
         
 [<Config(typeof<MyConfig>)>]
 type FsCheckParallelBenchIo () =
@@ -74,6 +74,32 @@ type FsCheckParallelBenchIo () =
     member self.DedicatedParallelIo4 () = 
         let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 4 } }
         ParallelBenchmarks.Tests.``io work emulation`` config
+        
+
+[<Config(typeof<MyConfig>)>]
+type FsCheckParallelBenchTrueIo () =
+
+    let config = { Config.QuickThrowOnFailure with Replay = Rnd(10538531436017130025UL,14826463994991344553UL) |> Some; QuietOnSuccess = true; EndSize = 1000; MaxTest = 100 }
+
+    [<Benchmark>]
+    member self.SeqIo () = 
+        let config = { config with ParallelRunConfig = None }
+        ParallelBenchmarks.Tests.``true io work emulation`` config
+
+    [<Benchmark>]
+    member self.DedicatedParallelIo16 () = 
+        let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 16 } }
+        ParallelBenchmarks.Tests.``true io work emulation`` config
+
+    [<Benchmark>]
+    member self.DedicatedParallelIo8 () = 
+        let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 8 } }
+        ParallelBenchmarks.Tests.``true io work emulation`` config
+
+    [<Benchmark>]
+    member self.DedicatedParallelIo4 () = 
+        let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 4 } }
+        ParallelBenchmarks.Tests.``true io work emulation`` config
 
 
 [<Config(typeof<MyConfig>)>]
@@ -194,7 +220,7 @@ type FsCheckParallelBench () =
         ParallelBenchmarks.Tests.``Csv all rows equals corresponding jobj`` config
 
 
-let defaultSwitch () = BenchmarkSwitcher [| typeof<FsCheckParallelBench>; typeof<FsCheckParallelBenchPrimes>; typeof<FsCheckParallelBenchSort>; typeof<FsCheckParallelBenchIo> |]
+let defaultSwitch () = BenchmarkSwitcher [| typeof<FsCheckParallelBench>; typeof<FsCheckParallelBenchPrimes>; typeof<FsCheckParallelBenchSort>; typeof<FsCheckParallelBenchIo> ; typeof<FsCheckParallelBenchTrueIo> |]
     
 [<EntryPoint>]
 let Main args =

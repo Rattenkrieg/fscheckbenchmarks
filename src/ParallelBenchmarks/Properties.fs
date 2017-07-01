@@ -143,3 +143,13 @@ module Properties =
         let i = Math.Abs i        
         let t = System.Threading.Tasks.Task.Delay i
         t.ContinueWith (fun _ -> true)
+
+    let ioTrueWork (i :int) =
+        async {
+            let i = Math.Abs i        
+            let c = new System.Net.Http.HttpClient ()
+            let x = c.GetAsync ("https://google.com") // /search?q=" + string i)
+            let! z = Async.AwaitTask x
+            let! q = z.Content.ReadAsStringAsync () |> Async.AwaitTask
+            return q.Length > 0
+        }
