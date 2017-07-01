@@ -1,0 +1,37 @@
+source https://www.nuget.org/api/v2
+
+nuget BenchmarkDotNet
+nuget BenchmarkDotNet.Core
+nuget BenchmarkDotNet.Toolchains.Roslyn
+nuget CsvHelper
+nuget FAKE
+nuget Microsoft.CodeAnalysis.Analyzers
+nuget Microsoft.CodeAnalysis.Common
+nuget Microsoft.CodeAnalysis.CSharp
+nuget Microsoft.IO.RecyclableMemoryStream
+nuget Newtonsoft.Json
+nuget NUnit
+nuget NUnit3TestAdapter version_in_path: true
+nuget System.Collections
+nuget System.Collections.Immutable
+nuget System.Diagnostics.Debug
+nuget System.Globalization
+nuget System.Linq
+nuget System.Reflection.Metadata
+nuget System.Resources.ResourceManager
+nuget System.Runtime
+nuget System.Runtime.Extensions
+nuget System.Threading
+nuget System.Threading.Tasks
+nuget System.Threading.Tasks.Extensions
+nuget Unquote
+nuget xunit
+nuget xunit.core
+nuget xunit.runner.console
+nuget xunit.runner.visualstudio version_in_path: true
+nuget SourceLink.Fake
+nuget FSharp.Formatting
+nuget Expecto
+
+git https://github.com/Rattenkrieg/FsCheck build: "build.sh", OS: mono
+git https://github.com/Rattenkrieg/FsCheck build: "build.cmd", OS: windows
