@@ -33,3 +33,6 @@ module Tests =
     let ``true io work emulation`` config =
         Check.One (config, ioTrueWork)
 
+    let ``cpu work emulation`` config =
+        Check.One (config, cpuWork)
+

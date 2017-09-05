@@ -51,6 +51,27 @@ type MyConfig() =
         
         
 [<Config(typeof<MyConfig>)>]
+type FsCheckParallelBenchCpu () =
+
+    let config = { Config.QuickThrowOnFailure with Replay = Rnd(10538531436017130025UL,14826463994991344553UL) |> Some; QuietOnSuccess = true; EndSize = 1000000; MaxTest = 1000000 }
+
+    [<Benchmark>]
+    member self.SeqCpu () = 
+        let config = { config with ParallelRunConfig = None }
+        ParallelBenchmarks.Tests.``cpu work emulation`` config
+
+    [<Benchmark>]
+    member self.DedicatedParallelCpu8 () = 
+        let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 8 } }
+        ParallelBenchmarks.Tests.``cpu work emulation`` config
+
+    [<Benchmark>]
+    member self.DedicatedParallelCpu1 () = 
+        let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 1 } }
+        ParallelBenchmarks.Tests.``cpu work emulation`` config
+        
+        
+[<Config(typeof<MyConfig>)>]
 type FsCheckParallelBenchIo () =
 
     let config = { Config.QuickThrowOnFailure with Replay = Rnd(10538531436017130025UL,14826463994991344553UL) |> Some; QuietOnSuccess = true; EndSize = 1000; MaxTest = 100 }
@@ -68,6 +89,11 @@ type FsCheckParallelBenchIo () =
     [<Benchmark>]
     member self.DedicatedParallelIo8 () = 
         let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 8 } }
+        ParallelBenchmarks.Tests.``io work emulation`` config
+
+    [<Benchmark>]
+    member self.DedicatedParallelIo1 () = 
+        let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 1 } }
         ParallelBenchmarks.Tests.``io work emulation`` config
 
     [<Benchmark>]
@@ -94,6 +120,11 @@ type FsCheckParallelBenchTrueIo () =
     [<Benchmark>]
     member self.DedicatedParallelIo8 () = 
         let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 8 } }
+        ParallelBenchmarks.Tests.``true io work emulation`` config
+
+    [<Benchmark>]
+    member self.DedicatedParallelIo1 () = 
+        let config = { config with ParallelRunConfig = Some { MaxDegreeOfParallelism = 1 } }
         ParallelBenchmarks.Tests.``true io work emulation`` config
 
     [<Benchmark>]
@@ -220,7 +251,14 @@ type FsCheckParallelBench () =
         ParallelBenchmarks.Tests.``Csv all rows equals corresponding jobj`` config
 
 
-let defaultSwitch () = BenchmarkSwitcher [| typeof<FsCheckParallelBench>; typeof<FsCheckParallelBenchPrimes>; typeof<FsCheckParallelBenchSort>; typeof<FsCheckParallelBenchIo> ; typeof<FsCheckParallelBenchTrueIo> |]
+let defaultSwitch () = BenchmarkSwitcher [|
+    typeof<FsCheckParallelBench>; 
+    typeof<FsCheckParallelBenchPrimes>; 
+    typeof<FsCheckParallelBenchSort>; 
+    typeof<FsCheckParallelBenchIo>; 
+    typeof<FsCheckParallelBenchTrueIo>;
+    typeof<FsCheckParallelBenchCpu>
+|]
     
 [<EntryPoint>]
 let Main args =

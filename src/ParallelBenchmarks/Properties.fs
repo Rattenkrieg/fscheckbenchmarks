@@ -153,3 +153,10 @@ module Properties =
             let! q = z.Content.ReadAsStringAsync () |> Async.AwaitTask
             return q.Length > 0
         }
+
+    let cpuWork (x :float) (y :float) =
+        let mutable a = 0.0
+        let z = x |> Math.Abs |> Math.Ceiling |> Math.Log
+        for i in 0..(if Double.IsNaN z || Double.IsInfinity z then 5 else z |> Convert.ToInt32) do
+            a <- a + Math.Atan2 (x, y)
+        a <> (a - 0.1)
